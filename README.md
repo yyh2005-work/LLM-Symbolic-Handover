@@ -18,8 +18,8 @@ Compared with the upstream handover project, this repository adds:
 
 This repository is directly derived from the following upstream codebase:
 
-1. `HandoverOptimDRL`
-   - Repository: `https://github.com/kit-cel/HandoverOptimDRL/tree/main`
+ `HandoverOptimDRL`
+   - Repository: `https://github.com/kit-cel/HandoverOptimDRL`
    - Role in this project: direct code ancestor for the handover environment, PPO evaluation pipeline, data layout, and baseline validation flow. The processed RSRP and SINR datasets under `data/processed/` also originate from the upstream `HandoverOptimDRL` simulation pipeline.
 
 ## Repository Layout
@@ -41,6 +41,7 @@ This repository is directly derived from the following upstream codebase:
 |   `-- symbolic_module_llm.py        # Symbolic rule extraction / deployment logic
 |-- src/ho_optim_drl/                 # Environments, protocols, config, loader, utils
 |-- setup.py
+|-- requirements.txt                 # Python package dependencies
 |-- README.md
 `-- LICENSE
 ```
@@ -65,6 +66,13 @@ This repository is organized into two script groups:
   These scripts are intended for repeated experiments, post-processing, and producing figures suitable for reports or papers.
 
 ## Installation
+
+```bash
+git clone https://github.com/yyh2005-work/LLM-Symbolic-Handover
+cd LLM-Symbolic-Handover
+pip install -r requirements.txt
+pip install -e .
+```
 
 ## Data And Model Prerequisites
 
@@ -132,13 +140,9 @@ This generates figures under `results/figures/`.
 If you want multiple successful LLM-generated runs before aggregating results:
 
 ```bash
-python scripts/batch_experiment_llm_rule.py --num-runs 30 --max-attempts 60
+python scripts/batch_experiment_llm_rule.py
 python scripts/aggregate_llm_results.py
 python scripts/plot_results.py
 ```
 
 The batch runner repeatedly calls the mapper-generation stage until the requested number of successful true-LLM runs is reached. The aggregation script then computes mean metrics across successful runs and prepares data for plotting.
-
-## License
-
-This repository remains under the MIT License. 
