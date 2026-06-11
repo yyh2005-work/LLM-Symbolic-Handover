@@ -10,6 +10,10 @@ from ho_optim_drl.gym_env import HandoverEnv3GPP
 import ho_optim_drl.utils as ut
 
 
+def _safe_ratio(num: float, den: float) -> float:
+    return float(num / den) if den > 0 else 0.0
+
+
 def main(root_path: str) -> int:
     """Main function."""
 
@@ -73,6 +77,7 @@ def main(root_path: str) -> int:
     sinr_after_ho_exe_tcell_db[np.isnan(sinr_after_ho_exe_tcell_db)] = -np.inf
 
     # Results (all speeds individually)
+    rate_mbps = []
     r_rel = []
     mean_pp_prob = []
     mean_rlf_prob = []
@@ -87,21 +92,41 @@ def main(root_path: str) -> int:
         r_mean = np.mean(config.bw * np.log2(1 + sinr_connected_lin))
         r_max = np.mean(config.bw * np.log2(1 + sinr_max_lin))
 
-        r_rel.append(r_mean / r_max)
-        mean_pp_prob.append(
-            np.mean(result_container["n_pp"][speed])
-            / np.mean(result_container["n_ho"][speed])
-        )
-        mean_rlf_prob.append(
-            np.mean(result_container["n_rlf"][speed])
-            / np.mean(result_container["n_ho"][speed])
-        )
+        rate_mbps.append(float(r_mean / 1e6))
+        r_rel.append(_safe_ratio(r_mean, r_max))
+        n_ho_sum = float(np.sum(result_container["n_ho"][speed]))
+        n_pp_sum = float(np.sum(result_container["n_pp"][speed]))
+        n_rlf_sum = float(np.sum(result_container["n_rlf"][speed]))
+        mean_pp_prob.append(_safe_ratio(n_pp_sum, n_ho_sum))
+        mean_rlf_prob.append(_safe_ratio(n_rlf_sum, n_ho_sum))
 
     # Print aggregated statistics
     aggregated_stats["speeds"] = np.unique(speeds).tolist()
+    aggregated_stats["rate_mbps"] = rate_mbps
     aggregated_stats["r_rel"] = r_rel
     aggregated_stats["mean_pp_prob"] = mean_pp_prob
     aggregated_stats["mean_rlf_prob"] = mean_rlf_prob
     ut.print_aggregated_stats(aggregated_stats)
 
+    # Save results for plotting
+    save_path = os.path.join(root_path, "results", "3gpp", "3gpp_results.npz")
+    os.makedirs(os.path.dirname(save_path), exist_ok=True)
+    np.savez(
+        save_path,
+        speeds=aggregated_stats["speeds"],
+        rate_mbps=aggregated_stats["rate_mbps"],
+        r_rel=aggregated_stats["r_rel"],
+        mean_pp_prob=aggregated_stats["mean_pp_prob"],
+        mean_rlf_prob=aggregated_stats["mean_rlf_prob"],
+        sinr_before_ho=result_container["sinr_at_ho_exe_pcell"],
+        sinr_after_ho=result_container["sinr_after_ho_exe_tcell"],
+    )
+    print(f"[3GPP] Results saved to: {save_path}")
     return 0
+
+if __name__ == "__main__":
+    import argparse
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--root-path", type=str, default=os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    args = parser.parse_args()
+    raise SystemExit(main(os.path.abspath(args.root_path)))

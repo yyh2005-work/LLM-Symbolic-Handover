@@ -1,4 +1,4 @@
-"""Setup script for the HandoverOptimDRL package."""
+"""Packaging configuration for the LLM-Symbolic-Handover project."""
 
 from setuptools import setup, find_packages
 
@@ -7,14 +7,11 @@ with open("requirements.txt", encoding="utf-8") as f:
     requirements = f.read().splitlines()
 
 setup(
-    name="ho_optim_drl",
-    version="1.0.0",
-    description="Framework for learning handover algorithms using deep reinforcement learning.",
-    author="Johannes Voigt",
-    author_email="johannes.voigt@kit.edu",
-    url="https://github.com/kit-cel/HandoverOptimDRL",
+    name="llm-symbolic-handover",
+    version="0.1.0",
+    description="LLM-assisted symbolic rule extraction and deployment for handover optimization.",
     license="MIT",
-    packages=find_packages(where="src"),
+    packages=find_packages(where="src", include=["ho_optim_drl", "ho_optim_drl.*"]),
     package_dir={"": "src"},
     install_requires=requirements,
     classifiers=[
@@ -23,12 +20,6 @@ setup(
         "Operating System :: OS Independent",
     ],
     python_requires=">=3.12",
-    entry_points={
-        "console_scripts": [
-            "validate_3gpp=scripts.validate_3gpp:main",
-            "validate_ppo=scripts.validate_ppo:main",
-        ],
-    },
     include_package_data=True,
     zip_safe=False,
 )

@@ -1,9 +1,0 @@
-% Required MATLAB toolboxes
-Parallel Computing Toolbox
-Statistics And Machine Learning Toolbox
-Automated Driving Toolbox
-Communications Toolbox
-Computer Vision Toolbox
-DSP System Toolbox
-Image Processing Toolbox
-Signal Processing Toolbox
