@@ -27,9 +27,9 @@ This repository is directly derived from the following upstream codebase:
 ```text
 .
 |-- data/
-|   `-- processed/                     # Processed RSRP / SINR MATLAB traces
+|   |-- processed/                     # Processed RSRP / SINR MATLAB traces
 |-- models/
-|   `-- model.zip                      # PPO model artifact used by validation scripts
+|   |-- model.zip                      # PPO model artifact used by validation scripts
 |-- scripts/
 |   |-- validate_3gpp.py              # 3GPP baseline evaluation
 |   |-- generate_llm_symbol_mapper.py # Stage 1: build symbolic mapper
@@ -38,12 +38,12 @@ This repository is directly derived from the following upstream codebase:
 |   |-- batch_experiment_llm_rule.py  # Multi-run experiment driver
 |   |-- aggregate_llm_results.py      # Aggregate repeated LLM-run outputs
 |   |-- plot_results.py               # Generate figures from saved NPZ files
-|   `-- symbolic_module_llm.py        # Symbolic rule extraction / deployment logic
+|   |-- symbolic_module_llm.py        # Symbolic rule extraction / deployment logic
 |-- src/ho_optim_drl/                 # Environments, protocols, config, loader, utils
 |-- setup.py
 |-- requirements.txt                 # Python package dependencies
 |-- README.md
-`-- LICENSE
+|-- LICENSE
 ```
 
 ## Single-Run And Batch Scripts
